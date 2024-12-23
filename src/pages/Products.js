@@ -4,16 +4,16 @@ import { useEffect, useState, useContext } from 'react';
 
 import UserContext from '../context/UserContext';
 
-export default function Shop(){
+export default function Products(){
     
     const {user} = useContext(UserContext);
 
     const [products, setProducts] = useState([]);
     
     const fetchData = () => {
-        let fetchUrl = user.isAdmin === true ? "http://localhost:4006/b6/products/all" 
+        let fetchUrl = user.isAdmin === true ? `${process.env.REACT_APP_API_BASE_URL}/products/all` 
         :
-        "http://localhost:4006/b6/products/active" 
+        `${process.env.REACT_APP_API_BASE_URL}/products/active` 
         
         
         fetch(fetchUrl, {

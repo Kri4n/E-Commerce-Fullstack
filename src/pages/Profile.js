@@ -26,7 +26,7 @@ export default function Profile(){
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        fetch(`http://localhost:4006/b6/users/details`, {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/users/details`, {
             headers: {
                 Authorization: `Bearer ${ localStorage.getItem('token') }`
             }
@@ -61,7 +61,7 @@ export default function Profile(){
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:4006/b6/users/update-password', {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/users/update-password`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,16 +87,16 @@ export default function Profile(){
 
     return (
         (user.id === null) ?
-            <Navigate to="/shop" />
+            <Navigate to="/products" />
             :
-            <Container className="mt-5 mb-5 p-5 bg-dark text-white">
-                <h1 className="mb-5 mt-5">Profile</h1>
-                <Button variant='light outline-dark' onClick={handleShow}>Change Password</Button>
-                <h2 className="mt-3">Name: {`${details.firstName} ${details.lastName}`}</h2>
+            <Container className="mt-5 mb-5 pb-5 p-5 bg-dark text-white rounded-top">
+                <h3 className="">Profile</h3>
                 <hr />
-                <h4>Contacts</h4>
-                <h5>Email: {details.email}</h5>
-                <h5>Mobile No: {details.mobileNo}</h5>
+                <Button variant='light outline-dark' onClick={handleShow}>Change Password</Button>
+                <h1 className="my-3">{`${details.firstName} ${details.lastName}`}</h1>
+                <h5 className='my-2'>Contact Details</h5>
+                <h5 className='lead'>{details.email}</h5>
+                <h5 className='lead'>{details.mobileNo}</h5>
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import { Button, Table, Modal, Form } from 'react-bootstrap';
-import { Navigate } from 'react-router-dom';
+import { Button, ButtonGroup, Table, Modal, Form } from 'react-bootstrap';
+import { Navigate, Link } from 'react-router-dom';
 import EditProduct from './EditProduct';
 import { Notyf } from 'notyf';
 
@@ -47,14 +47,14 @@ export default function AdminView({ productsData, fetchData }) {
 
 
   // Add New Course
-  function createCourse(e){
+  function createProduct(e){
 
     //prevent submit event's default behavior
     e.preventDefault();
 
     let token = localStorage.getItem('token');
 
-    fetch('http://localhost:4006/b6/products/',{
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/products/`,{
 
         method: 'POST',
         headers: {
@@ -93,7 +93,6 @@ export default function AdminView({ productsData, fetchData }) {
 
 }
 
-
   return (
     (user.isAdmin === true)
       ?
@@ -102,8 +101,11 @@ export default function AdminView({ productsData, fetchData }) {
       <h2 className="text-center pt-4">Admin Dashboard</h2>
 
       <div className="d-flex justify-content-center mb-3">
+        <ButtonGroup>
         <Button variant="primary" onClick={handleShowCreateModal}>Add New Product</Button>
-        <Button variant="success" className="mx-2">Show User Orders</Button>
+        <Button as={Link} to="/all-orders" variant="success">Show All Orders</Button>
+        <Button as={Link} to="/user-management" variant="warning">User Management</Button> {/* Link to manage users */}
+        </ButtonGroup>
       </div>
 
       <Table striped bordered hover responsive className="mt-2">
@@ -136,7 +138,7 @@ export default function AdminView({ productsData, fetchData }) {
           <Modal.Title>Add New Product</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={e => createCourse(e)}>
+          <Form onSubmit={e => createProduct(e)}>
             <Form.Group controlId="productName">
               <Form.Label>Name</Form.Label>
               <Form.Control

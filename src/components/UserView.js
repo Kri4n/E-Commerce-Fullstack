@@ -30,7 +30,7 @@ export default function UserView ({productsData}){
 
     const handleSearch = async () => {
         try {
-          const response = await fetch(`http://localhost:4006/b6/products/search-by-name`, {
+          const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/products/search-by-name`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

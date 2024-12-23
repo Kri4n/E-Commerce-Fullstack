@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { Notyf } from 'notyf';
 
 import UserContext from '../context/UserContext';
@@ -14,12 +14,14 @@ export default function Login() {
     
     const { user, setUser } = useContext(UserContext);
     
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // New state to handle login status
+    const [isLoggedIn, setIsLoggedIn] = useState(false); 
+
+    const navigate = useNavigate();
     
     function authenticate(e) {
         e.preventDefault();
         
-        fetch('http://localhost:4006/b6/users/login', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/users/login`, {
             method: 'POST',
             headers: {
             "Content-Type": "application/json"
@@ -43,7 +45,7 @@ export default function Login() {
     }
     
     function retrieveUserDetails(token) {
-        fetch('http://localhost:4006/b6/users/details', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/users/details`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -51,7 +53,8 @@ export default function Login() {
         .then(res => res.json())
         .then(data => {
             setUser({ id: data._id, isAdmin: data.isAdmin });
-            setIsLoggedIn(true); // Set the login status to true
+            setIsLoggedIn(true);
+            navigate('/products');
         });
     }
     

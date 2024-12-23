@@ -1,12 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { Notyf } from 'notyf';
 import UserContext from '../context/UserContext';
 
 export default function Register() {
   const notyf = new Notyf();
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   // State hooks to store the values of the input fields
   const [firstName, setFirstName] = useState("");
@@ -34,7 +35,7 @@ export default function Register() {
 
     e.preventDefault();
 
-    fetch('http://localhost:4006/b6/users/register', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/register`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json"
@@ -58,7 +59,9 @@ export default function Register() {
         setPassword('');
         setConfirmPassword('');
 
-        notyf.success("Registration successful");  // Fixed typo here
+        notyf.success("Registration successful");  
+
+        navigate('/login');
       } else {
         notyf.error(data.message || "Registration failed");
       }
@@ -71,75 +74,87 @@ export default function Register() {
 
   return (
     (user.id !== null) ? 
-      <Navigate to="/shop" /> 
+      <Navigate to="/products" /> 
       : 
-      <Form onSubmit={(e) => registerUser(e)}>
-        <h1 className="my-5 text-center">Register</h1>
-        <Form.Group>
-          <Form.Label>First Name:</Form.Label>
-          <Form.Control 
-            type="text" 
-            placeholder="Enter First Name" 
-            required 
-            value={firstName}
-            onChange={e => { setFirstName(e.target.value) }}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Last Name:</Form.Label>
-          <Form.Control 
-            type="text" 
-            placeholder="Enter Last Name" 
-            required  
-            value={lastName}
-            onChange={e => { setLastName(e.target.value) }}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Email:</Form.Label>
-          <Form.Control 
-            type="email" 
-            placeholder="Enter Email" 
-            required 
-            value={email}
-            onChange={e => { setEmail(e.target.value) }}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Mobile No:</Form.Label>
-          <Form.Control 
-            type="number" 
-            placeholder="Enter 11 Digit No." 
-            required  
-            value={mobileNo}
-            onChange={e => { setMobileNo(e.target.value) }}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Password:</Form.Label>
-          <Form.Control 
-            type="password" 
-            placeholder="Enter Password" 
-            required 
-            value={password}
-            onChange={e => { setPassword(e.target.value) }}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Confirm Password:</Form.Label>
-          <Form.Control 
-            type="password" 
-            placeholder="Confirm Password" 
-            required 
-            value={confirmPassword}
-            onChange={e => { setConfirmPassword(e.target.value) }}
-          />
-        </Form.Group>
-        { isActive ?
-          <Button className='mt-1 mb-3' variant="primary" type="submit" id="submitBtn">Submit</Button> 
-          : 
-          <Button className='mt-1 mb-3' variant="primary" type="submit" id="submitBtn" disabled>Submit</Button>
-        }
-      </Form>
+      <Form onSubmit={(e) => registerUser(e)} className="container my-5">
+  <div className="d-flex justify-content-center">
+    <div className="card shadow-sm p-4 w-50">
+      <h1 className="text-center mb-4">Register</h1>
+
+      <Form.Group className="mb-3">
+        <Form.Label>First Name:</Form.Label>
+        <Form.Control 
+          type="text" 
+          placeholder="Enter First Name" 
+          required 
+          value={firstName}
+          onChange={e => { setFirstName(e.target.value) }}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Last Name:</Form.Label>
+        <Form.Control 
+          type="text" 
+          placeholder="Enter Last Name" 
+          required  
+          value={lastName}
+          onChange={e => { setLastName(e.target.value) }}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Email:</Form.Label>
+        <Form.Control 
+          type="email" 
+          placeholder="Enter Email" 
+          required 
+          value={email}
+          onChange={e => { setEmail(e.target.value) }}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Mobile No:</Form.Label>
+        <Form.Control 
+          type="number" 
+          placeholder="Enter 11 Digit No." 
+          required  
+          value={mobileNo}
+          onChange={e => { setMobileNo(e.target.value) }}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Password:</Form.Label>
+        <Form.Control 
+          type="password" 
+          placeholder="Enter Password" 
+          required 
+          value={password}
+          onChange={e => { setPassword(e.target.value) }}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Confirm Password:</Form.Label>
+        <Form.Control 
+          type="password" 
+          placeholder="Confirm Password" 
+          required 
+          value={confirmPassword}
+          onChange={e => { setConfirmPassword(e.target.value) }}
+        />
+      </Form.Group>
+
+      {isActive ? 
+        <Button className='w-100' variant="dark" type="submit">Submit</Button> 
+        : 
+        <Button className='w-100' variant="outline-dark" type="submit" disabled>Submit</Button>
+      }
+    </div>
+  </div>
+</Form>
+
   );
 }

@@ -10,7 +10,7 @@ export default function ActivateProduct({product , isActive, fetchData}) {
 
     const activateProduct = async () => {
         try {
-          const response = await fetch(`http://localhost:4006/b6/products/${productId}/activate`, {
+          const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${productId}/activate`, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export default function ActivateProduct({product , isActive, fetchData}) {
 
       const disableProduct = async () => {
         try {
-          const response = await fetch(`http://localhost:4006/b6/products/${productId}/archive`, {
+          const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${productId}/archive`, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',

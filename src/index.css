@@ -45,3 +45,9 @@ code {
   width: 20%;
   height: 20%;
 }
+
+.table-actions {
+  width: 150px;
+  text-align: center;
+  vertical-align: middle;
+}

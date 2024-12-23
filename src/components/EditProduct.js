@@ -25,7 +25,7 @@ export default function EditProduct({ product, fetchData, buttonText }) {
   const editProduct = (e, productId) => {
     e.preventDefault();
 
-    fetch(`http://localhost:4006/b6/products/${productId}/update`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${productId}/update`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'Application/json',

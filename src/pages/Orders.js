@@ -11,7 +11,7 @@ const Orders = () => {
   // Function to fetch product details by productId
   const fetchProductDetails = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:4006/b6/products/${productId}`);
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${productId}`);
       const productData = await response.json();
       return productData; // Return product details (name, price, etc.)
     } catch (err) {
@@ -22,7 +22,7 @@ const Orders = () => {
 
   useEffect(() => {
     // Fetch the orders from the API
-    fetch('http://localhost:4006/b6/orders/my-orders', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/orders/my-orders`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },

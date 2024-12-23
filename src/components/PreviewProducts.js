@@ -27,7 +27,7 @@ export default function PreviewProducts(props){
         </HStack>
         </Card.Body>
         <Card.Footer>
-        <NavLink to={`/shop/${_id}`} className='text-decoration-none text-dark btn btn-light'>More Details</NavLink>
+        <NavLink to={`/products/${_id}`} className='text-decoration-none text-dark btn btn-light'>More Details</NavLink>
         </Card.Footer>
         </Box>
         </Card.Root>

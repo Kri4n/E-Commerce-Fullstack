@@ -4,7 +4,6 @@ import { Button, ListGroup, Alert } from 'react-bootstrap';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { NavLink } from 'react-router-dom';
 import { Notyf } from 'notyf';
-
 import UserContext from '../context/UserContext';
 
 export default function Cart() {
@@ -12,9 +11,7 @@ export default function Cart() {
   const [totalPrice, setTotalPrice] = useState(0);
   const { user } = useContext(UserContext);
   const notyf = new Notyf();
-
   const navigate = useNavigate();
-
   const emptyCart = 'https://cdn-icons-png.flaticon.com/512/11329/11329060.png';
 
   useEffect(() => {
@@ -24,7 +21,7 @@ export default function Cart() {
   }, [user]);
 
   function fetchCartItems() {
-    fetch(`http://localhost:4006/b6/cart/get-cart`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/cart/get-cart`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -37,11 +34,12 @@ export default function Cart() {
 
           // Fetch product details for each item in the cart
           const updatedCartItemsPromises = updatedItems.map(item =>
-            fetch(`http://localhost:4006/b6/products/${item.productId}`)
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${item.productId}`)
               .then(res => res.json())
               .then(productData => ({
                 ...item,
-                productName: productData.name, 
+                productName: productData.name,
+                price: productData.price, // Add price for each product
               }))
           );
 
@@ -56,9 +54,9 @@ export default function Cart() {
   function updateQuantity(productId, newQuantity) {
     const updatedItem = cartItems.find(item => item.productId === productId);
     if (updatedItem) {
-      const updatedSubtotal = updatedItem.subtotal / updatedItem.quantity * newQuantity;
+      const updatedSubtotal = updatedItem.price * newQuantity; // Calculate new subtotal
 
-      fetch(`http://localhost:4006/b6/cart/update-cart-quantity`, {
+      fetch(`${process.env.REACT_APP_API_BASE_URL}/cart/update-cart-quantity`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +79,7 @@ export default function Cart() {
   }
 
   function removeFromCart(productId) {
-    fetch(`http://localhost:4006/b6/cart/${productId}/remove-from-cart`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/cart/${productId}/remove-from-cart`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -90,7 +88,7 @@ export default function Cart() {
       .then((res) => res.json())
       .then(() => {
         notyf.success('Item removed from cart');
-        fetchCartItems(); 
+        fetchCartItems();
       })
       .catch((error) => {
         notyf.error('Failed to remove item.');
@@ -98,7 +96,7 @@ export default function Cart() {
   }
 
   function clearCart() {
-    fetch('http://localhost:4006/b6/cart/clear-cart', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/cart/clear-cart`, {
         method: 'PUT',
         headers: {
             Authorization: `Bearer ${localStorage.getItem(`token`)}`,
@@ -110,11 +108,11 @@ export default function Cart() {
     })
     .catch((error) => {
         notyf.error('Failed to clear cart.');
-      });
+    });
   }
 
   function checkout() {
-    fetch('http://localhost:4006/b6/orders/checkout', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/orders/checkout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -146,7 +144,7 @@ export default function Cart() {
       {cartItems.length === 0 ? (
         <Alert variant="warning" className="text-center mt-5 p-5">
              <h3>Your cart is empty.</h3>
-             <NavLink className="btn btn-dark my-2" to="/products">Go to Shop</NavLink>
+             <NavLink className="btn btn-dark my-2" to="/products">Go to Products</NavLink>
             <div className='d-flex justify-content-center align-items-center'>
             <img className='img-fluid empty-cart' src={emptyCart}/>
             </div>
@@ -157,6 +155,7 @@ export default function Cart() {
             <ListGroup.Item key={item.productId} className="d-flex justify-content-between">
               <div>
                 <div className='lead fw-bold'>{item.productName}</div>
+                <div className='lead'>Price: ₱{item.price}</div> {/* Show price per product */}
                 <div className='lead'>
                     Quantity: {item.quantity}
                     <ButtonGroup aria-label="modifyQuantity" className='ps-5'>
